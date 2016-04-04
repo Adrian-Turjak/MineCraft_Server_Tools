@@ -3,7 +3,6 @@
 # first lets ensure java is at the latest version
 echo "setting up java"
 sudo sudo apt-get --assume-yes purge openjdk-\*
-sudo apt-get --assume-yes install
 sudo add-apt-repository --assume-yes ppa:webupd8team/java
 sudo apt-get --assume-yes update
 sudo apt-get install --assume-yes oracle-java8-installer
@@ -16,10 +15,11 @@ zip_file="FTBInfinityServer.zip"
 
 echo "getting server files"
 wget $server_url
+sudo apt-get install --assume-yes unzip
 unzip $zip_file -d mc_server
 
 echo "Running FTBInstall"
-cd mc_server_new
+cd mc_server
 . ./FTBInstall.sh
 cd ..
 echo "FTBInstall completed"
@@ -35,8 +35,8 @@ echo "EULA updated"
 
 echo "setting up server as service"
 server_path=$(readlink -f mc_server/ServerStart.sh)
-sudo cp scripts/minecraft-server.conf /etc/init/minecraft-server.conf
-sudo find /etc/init/minecraft-server.conf -type f -exec sudo sed -i 's/<server_path>/${server_path}/g' {} \;
+sudo cp scripts/minecraft-server.conf /etc/init/
+sudo find /etc/init/minecraft-server.conf -type f -exec sudo sed -i "s@<server_path>@$server_path@" {} \;
 sudo initctl reload-configuration
 echo "server setup as service"
 
